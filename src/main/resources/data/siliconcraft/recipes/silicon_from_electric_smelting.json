@@ -1,0 +1,9 @@
+{
+    "type": "siliconcraft:electric_smelting",
+    "ingredient": {
+        "item": "minecraft:sand"
+    },
+    "result": "siliconcraft:silicon",
+    "experience": 1.0,
+    "cookingtime": 1200
+}

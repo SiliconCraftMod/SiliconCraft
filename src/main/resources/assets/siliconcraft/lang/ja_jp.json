@@ -1,3 +1,6 @@
 {
-  "item.siliconcraft.smartphone": "スマートフォン"
+  "item.siliconcraft.smartphone": "スマートフォン",
+  "block.siliconcraft.electric_arc_furnace": "電気炉",
+  "item.siliconcraft.silicon": "シリコン",
+  "container.electric_arc_furnace": "電気炉"
 }
