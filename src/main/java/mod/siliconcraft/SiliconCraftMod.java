@@ -1,7 +1,20 @@
 package mod.siliconcraft;
 
+import net.minecraft.world.item.Item;
+import mod.siliconcraft.block.ElectricArcFurnaceBlock;
+import mod.siliconcraft.block.entity.ElectricArcFurnaceBlockEntity;
+import mod.siliconcraft.item.SiliconItem;
+import mod.siliconcraft.item.crafting.CustomCookingSerializer;
+import mod.siliconcraft.item.crafting.ElectricSmeltingRecipe;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -12,19 +25,33 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod("siliconcraft")
+@Mod(SiliconCraftMod.MOD_ID)
 public class SiliconCraftMod
 {
+    public static final String MOD_ID = "siliconcraft";
+
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
+
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_REGISTER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_REGISTER = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
+    public static RegistryObject<CustomCookingSerializer<ElectricSmeltingRecipe>> ELECTRIC_SMELTING_RECIPES = RECIPE_REGISTER.register("electric_smelting", () -> {return new CustomCookingSerializer<>(ElectricSmeltingRecipe::new, 100);});
 
     public SiliconCraftMod() {
+        RECIPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+        BLOCK_ENTITY_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ElectricArcFurnaceBlockEntity.registerBlockEntity();
+
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
@@ -63,14 +90,27 @@ public class SiliconCraftMod
         LOGGER.info("HELLO from server starting");
     }
 
+    public static ToIntFunction<BlockState> litBlockEmission(int p_50760_) {
+        return (p_50763_) -> {
+            return p_50763_.getValue(BlockStateProperties.LIT) ? p_50760_ : 0;
+        };
+    }
+
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
         @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
+        public static void onBlocksRegistry(final RegistryEvent.Register<Block> event) {
             // register a new block here
-            LOGGER.info("HELLO from Register Block");
+            event.getRegistry().register(ElectricArcFurnaceBlock.BLOCK);
+        }
+
+        @SubscribeEvent
+        public static void registerItems(final RegistryEvent.Register<Item> event) {
+            event.getRegistry().register(new BlockItem(ElectricArcFurnaceBlock.BLOCK, new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)).setRegistryName(ElectricArcFurnaceBlock.BLOCK.getRegistryName()));
+            event.getRegistry().register(SiliconItem.ITEM);
+            event.getRegistry().register(Smartphone.ITEM);
         }
     }
 }
