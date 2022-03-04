@@ -23,18 +23,7 @@ public class Smartphone extends Item {
         super(new Properties().tab(CreativeModeTab.TAB_REDSTONE).durability(0).stacksTo(1));
     }
 
-    public static final Smartphone SMARTPHONE = create();
-
-    private static Smartphone create() {
-        Smartphone smh = new Smartphone();
-        smh.setRegistryName("smartphone");
-        return smh;
-    }
-
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(SMARTPHONE);
-    }
+    public static final Item ITEM = new Smartphone().setRegistryName("smartphone");
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level p_41432_, Player player, InteractionHand hand) {

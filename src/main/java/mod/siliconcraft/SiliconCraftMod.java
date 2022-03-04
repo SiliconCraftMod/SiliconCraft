@@ -110,6 +110,7 @@ public class SiliconCraftMod
         public static void registerItems(final RegistryEvent.Register<Item> event) {
             event.getRegistry().register(new BlockItem(ElectricArcFurnaceBlock.BLOCK, new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)).setRegistryName(ElectricArcFurnaceBlock.BLOCK.getRegistryName()));
             event.getRegistry().register(SiliconItem.ITEM);
+            event.getRegistry().register(Smartphone.ITEM);
         }
     }
 }
