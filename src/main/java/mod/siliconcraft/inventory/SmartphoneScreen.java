@@ -3,9 +3,9 @@ package mod.siliconcraft.inventory;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screens.Screen;
 
-public class SmartphoneMenu extends Screen {
+public class SmartphoneScreen extends Screen {
 
-    protected SmartphoneMenu() {
+    protected SmartphoneScreen() {
         super(NarratorChatListener.NO_TITLE);
     }
 
